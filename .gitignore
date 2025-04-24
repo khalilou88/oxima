@@ -45,7 +45,9 @@ Thumbs.db
 
 # Supabase
 .supabase
+/supabase/.temp/
+/supabase/.branches/
 # DO NOT ignore migrations
 !supabase/migrations
 !supabase/seed
-/supabase/.temp/
+
