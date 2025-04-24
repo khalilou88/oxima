@@ -1,0 +1,9 @@
+{
+  "name": "client-app-e2e",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/client/client-app-e2e/src",
+  "implicitDependencies": ["client-app"],
+  "// targets": "to see all targets run: nx show project client-app-e2e --web",
+  "targets": {}
+}
