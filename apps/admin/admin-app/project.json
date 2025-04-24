@@ -1,27 +1,27 @@
 {
-  "name": "apps/admin/admin-app",
-  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "name": "admin-app",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "prefix": "app",
-  "sourceRoot": "apps/apps/admin/admin-app/src",
+  "sourceRoot": "apps/admin/admin-app/src",
   "tags": [],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/apps/admin/admin-app",
-        "index": "apps/apps/admin/admin-app/src/index.html",
-        "browser": "apps/apps/admin/admin-app/src/main.ts",
+        "outputPath": "dist/apps/admin/admin-app",
+        "index": "apps/admin/admin-app/src/index.html",
+        "browser": "apps/admin/admin-app/src/main.ts",
         "polyfills": ["zone.js"],
-        "tsConfig": "apps/apps/admin/admin-app/tsconfig.app.json",
+        "tsConfig": "apps/admin/admin-app/tsconfig.app.json",
         "assets": [
           {
             "glob": "**/*",
-            "input": "apps/apps/admin/admin-app/public"
+            "input": "apps/admin/admin-app/public"
           }
         ],
-        "styles": ["apps/apps/admin/admin-app/src/styles.css"],
+        "styles": ["apps/admin/admin-app/src/styles.css"],
         "scripts": []
       },
       "configurations": {
@@ -52,10 +52,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "apps/admin/admin-app:build:production"
+          "buildTarget": "admin-app:build:production"
         },
         "development": {
-          "buildTarget": "apps/admin/admin-app:build:development"
+          "buildTarget": "admin-app:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -63,7 +63,7 @@
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "buildTarget": "apps/admin/admin-app:build"
+        "buildTarget": "admin-app:build"
       }
     },
     "lint": {
@@ -72,9 +72,9 @@
     "serve-static": {
       "executor": "@nx/web:file-server",
       "options": {
-        "buildTarget": "apps/admin/admin-app:build",
+        "buildTarget": "admin-app:build",
         "port": 4200,
-        "staticFilePath": "dist/apps/apps/admin/admin-app/browser",
+        "staticFilePath": "dist/apps/admin/admin-app/browser",
         "spa": true
       }
     }
