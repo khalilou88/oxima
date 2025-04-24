@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@oxima/migration": ["tools/generators/migration/src/index.ts"]
+      "@oxima/data-access-supabase": ["libs/data-access/supabase/src/index.ts"],
+      "@oxima/migration": ["tools/generators/migration/src/index.ts"],
+      "@oxima/shared-ui": ["libs/shared/shared-ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
