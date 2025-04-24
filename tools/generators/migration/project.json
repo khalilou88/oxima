@@ -1,0 +1,41 @@
+{
+  "name": "migration",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "tools/generators/migration/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/tools/generators/migration",
+        "main": "tools/generators/migration/src/index.ts",
+        "tsConfig": "tools/generators/migration/tsconfig.lib.json",
+        "assets": [
+          "tools/generators/migration/*.md",
+          {
+            "input": "./tools/generators/migration/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./tools/generators/migration/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./tools/generators/migration",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./tools/generators/migration",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ]
+      }
+    }
+  }
+}
