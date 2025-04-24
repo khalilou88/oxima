@@ -41,7 +41,7 @@ jobs:
 
       - name: Setup Supabase local development
         run: |
-          npx supabase start --db-only
+          npx supabase start
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
