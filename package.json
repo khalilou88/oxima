@@ -2,7 +2,10 @@
   "name": "@oxima/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "db:migrate": "supabase db push",
+    "db:seed": "supabase db reset"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "~19.2.0",
@@ -43,6 +46,7 @@
     "eslint-plugin-playwright": "^1.6.2",
     "nx": "20.8.0",
     "prettier": "^2.6.2",
+    "supabase": "^2.22.4",
     "tslib": "^2.3.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.19.0"
