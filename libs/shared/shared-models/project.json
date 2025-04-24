@@ -1,0 +1,19 @@
+{
+  "name": "shared-models",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/shared-models/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/shared/shared-models",
+        "main": "libs/shared/shared-models/src/index.ts",
+        "tsConfig": "libs/shared/shared-models/tsconfig.lib.json",
+        "assets": ["libs/shared/shared-models/*.md"]
+      }
+    }
+  }
+}
