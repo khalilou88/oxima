@@ -1,21 +1,32 @@
-import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient, User, AuthResponse } from '@supabase/supabase-js';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from '../environments/environment';
+import { inject, Injectable } from '@angular/core';
+import {
+  AuthResponse,
+  createClient,
+  OAuthResponse,
+  SupabaseClient,
+  User,
+  UserResponse,
+} from '@supabase/supabase-js';
+import { BehaviorSubject } from 'rxjs';
+
+import { PropertiesService } from '@oxima/properties';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SupabaseService {
-  private supabase: SupabaseClient;
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly supabase: SupabaseClient;
+  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  private readonly propertiesService = inject(PropertiesService);
+  private readonly supabaseUrl =
+    this.propertiesService.getProperty<string>('supabaseUrl');
+  private readonly supabaseKey =
+    this.propertiesService.getProperty<string>('supabaseKey');
+
   constructor() {
-    this.supabase = createClient(
-      environment.supabaseUrl,
-      environment.supabaseKey
-    );
+    this.supabase = createClient(this.supabaseUrl, this.supabaseKey);
 
     // Check if user is already logged in
     this.supabase.auth.getSession().then(({ data }) => {
@@ -32,7 +43,7 @@ export class SupabaseService {
   async signUp(email: string, password: string): Promise<AuthResponse> {
     return this.supabase.auth.signUp({
       email,
-      password
+      password,
     });
   }
 
@@ -40,21 +51,23 @@ export class SupabaseService {
   async signIn(email: string, password: string): Promise<AuthResponse> {
     return this.supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
   }
 
   // Sign in with magic link
   async signInWithMagicLink(email: string): Promise<AuthResponse> {
     return this.supabase.auth.signInWithOtp({
-      email
+      email,
     });
   }
 
   // Sign in with OAuth provider
-  async signInWithProvider(provider: 'google' | 'github' | 'facebook'): Promise<AuthResponse> {
+  async signInWithProvider(
+    provider: 'google' | 'github' | 'facebook'
+  ): Promise<OAuthResponse> {
     return this.supabase.auth.signInWithOAuth({
-      provider
+      provider,
     });
   }
 
@@ -74,9 +87,9 @@ export class SupabaseService {
   }
 
   // Update password
-  async updatePassword(password: string): Promise<AuthResponse> {
+  async updatePassword(password: string): Promise<UserResponse> {
     return this.supabase.auth.updateUser({
-      password
+      password,
     });
   }
 

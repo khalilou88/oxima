@@ -7,8 +7,8 @@ import { SupabaseService } from '../supabase.service';
 })
 export class AuthGuard implements CanActivate {
   constructor(
-    private supabaseService: SupabaseService,
-    private router: Router
+    private readonly supabaseService: SupabaseService,
+    private readonly router: Router
   ) {}
 
   canActivate(): boolean {

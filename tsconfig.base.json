@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@my-monorepo/shared-models": ["libs/shared/shared-models/src/index.ts"],
+      "@oxima/properties": ["libs/properties/src/index.ts"],
       "@oxima/auth": ["libs/auth/src/index.ts"],
       "@oxima/data-access-supabase": ["libs/data-access/supabase/src/index.ts"],
       "@oxima/migration": ["tools/generators/migration/src/index.ts"],
