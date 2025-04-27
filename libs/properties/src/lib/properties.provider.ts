@@ -1,7 +1,8 @@
 import {
-  APP_INITIALIZER,
   EnvironmentProviders,
   makeEnvironmentProviders,
+  inject,
+  provideAppInitializer,
 } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { PropertiesService } from './properties.service';
@@ -11,7 +12,7 @@ export interface PropertiesConfig {
 }
 
 /**
- * Provides the Properties service and configuration
+ * Provides the Properties service and configuration using provideAppInitializer
  * @param config Optional configuration options
  * @returns Environment providers for the properties service
  */
@@ -21,13 +22,10 @@ export function provideProperties(
   return makeEnvironmentProviders([
     provideHttpClient(),
     PropertiesService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (propertiesService: PropertiesService) => {
-        return () => propertiesService.loadProperties(config?.path);
-      },
-      deps: [PropertiesService],
-      multi: true,
-    },
+    // Fix: directly return the Promise from loadProperties
+    provideAppInitializer(() => {
+      const propertiesService = inject(PropertiesService);
+      return propertiesService.loadProperties(config?.path);
+    }),
   ]);
 }
