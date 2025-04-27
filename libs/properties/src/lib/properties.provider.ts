@@ -1,4 +1,8 @@
-import { APP_INITIALIZER, EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  EnvironmentProviders,
+  makeEnvironmentProviders,
+} from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { PropertiesService } from './properties.service';
 
@@ -11,7 +15,9 @@ export interface PropertiesConfig {
  * @param config Optional configuration options
  * @returns Environment providers for the properties service
  */
-export function provideProperties(config?: PropertiesConfig): EnvironmentProviders {
+export function provideProperties(
+  config?: PropertiesConfig
+): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideHttpClient(),
     PropertiesService,
@@ -21,7 +27,7 @@ export function provideProperties(config?: PropertiesConfig): EnvironmentProvide
         return () => propertiesService.loadProperties(config?.path);
       },
       deps: [PropertiesService],
-      multi: true
-    }
+      multi: true,
+    },
   ]);
 }

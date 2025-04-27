@@ -1,29 +1,30 @@
-import { Injectable, signal, computed, effect, Signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 
 export interface Properties {
   [key: string]: any;
 }
 
+export class PropertyNotFoundError extends Error {
+  constructor(key: string) {
+    super(`Property '${key}' not found in configuration`);
+    this.name = 'PropertyNotFoundError';
+  }
+}
+
 /**
- * Modern properties service using Angular signals for reactive configuration management
+ * Simple properties service for accessing configuration from properties.json
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PropertiesService {
-  // Signal to hold the properties
-  private propertiesSignal = signal<Properties>({});
-
-  // Read-only signal for public consumption
-  public readonly properties: Signal<Properties> = computed(() => this.propertiesSignal());
-
+  private properties: Properties = {};
   private propertiesLoaded = false;
-  private defaultPath = 'assets/properties.json';
+  private readonly defaultPath = 'assets/properties.json';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   /**
    * Load properties from the specified path
@@ -32,76 +33,56 @@ export class PropertiesService {
    */
   async loadProperties(path?: string): Promise<Properties> {
     if (this.propertiesLoaded) {
-      return this.propertiesSignal();
+      return this.properties;
     }
 
-    const filePath = path || this.defaultPath;
+    const filePath = path ?? this.defaultPath;
 
     try {
-      const properties = await firstValueFrom(
-        this.http.get<Properties>(filePath).pipe(
-          catchError(error => {
-            console.error('Failed to load properties file', error);
-            return Promise.resolve({} as Properties);
-          })
-        )
+      // Use firstValueFrom instead of deprecated toPromise()
+      this.properties = await firstValueFrom(
+        this.http.get<Properties>(filePath)
       );
-
-      this.propertiesSignal.set(properties);
       this.propertiesLoaded = true;
-      return properties;
+      return this.properties;
     } catch (error) {
-      console.error('Error loading properties:', error);
-      return {};
+      console.error('Failed to load properties file', error);
+      throw new Error('Failed to load properties file');
     }
   }
 
   /**
    * Get a property value by key
    * @param key The property key (supports dot notation for nested properties)
-   * @param defaultValue Default value if property doesn't exist
-   * @returns The property value or default value
+   * @returns The property value
+   * @throws PropertyNotFoundError if the property doesn't exist
    */
-  getProperty<T>(key: string, defaultValue?: T): T {
-    const properties = this.propertiesSignal();
-    const value = this.getNestedProperty(properties, key);
-    return (value !== undefined) ? value as T : (defaultValue as T);
+  getProperty<T>(key: string): T {
+    if (!this.propertiesLoaded) {
+      throw new Error('Properties not loaded. Call loadProperties() first');
+    }
+
+    const value = this.getNestedProperty(this.properties, key);
+
+    if (value === undefined) {
+      throw new PropertyNotFoundError(key);
+    }
+
+    return value as T;
   }
 
   /**
-   * Create a signal that contains a specific property value and updates when the property changes
+   * Check if a property exists
    * @param key The property key
-   * @param defaultValue Default value if property doesn't exist
-   * @returns A signal containing the property value
+   * @returns True if the property exists
    */
-  propertySignal<T>(key: string, defaultValue?: T): Signal<T> {
-    return computed(() => {
-      const properties = this.propertiesSignal();
-      const value = this.getNestedProperty(properties, key);
-      return (value !== undefined) ? value as T : (defaultValue as T);
-    });
-  }
+  hasProperty(key: string): boolean {
+    if (!this.propertiesLoaded) {
+      throw new Error('Properties not loaded. Call loadProperties() first');
+    }
 
-  /**
-   * Update a specific property
-   * @param key The property key
-   * @param value The new value
-   */
-  setProperty<T>(key: string, value: T): void {
-    const properties = {...this.propertiesSignal()};
-    this.setNestedProperty(properties, key, value);
-    this.propertiesSignal.set(properties);
-  }
-
-  /**
-   * Update multiple properties at once
-   * @param newProperties The properties to update
-   */
-  updateProperties(newProperties: Partial<Properties>): void {
-    this.propertiesSignal.update(currentProps => ({
-      ...currentProps,
-      ...newProperties
-    }));
+    const value = this.getNestedProperty(this.properties, key);
+    return value !== undefined;
   }
 
   /**
@@ -109,7 +90,12 @@ export class PropertiesService {
    * @returns All properties
    */
   getAllProperties(): Properties {
-    return {...this.propertiesSignal()};
+    if (!this.propertiesLoaded) {
+      throw new Error('Properties not loaded. Call loadProperties() first');
+    }
+
+    // Return a deep copy to prevent modification
+    return JSON.parse(JSON.stringify(this.properties));
   }
 
   /**
@@ -132,30 +118,5 @@ export class PropertiesService {
     }
 
     return current;
-  }
-
-  /**
-   * Set a nested property using dot notation
-   * @param obj The object to modify
-   * @param path The property path (e.g. 'app.config.apiUrl')
-   * @param value The value to set
-   */
-  private setNestedProperty(obj: any, path: string, value: any): void {
-    if (!path) return;
-
-    const properties = path.split('.');
-    const lastProp = properties.pop()!;
-    let current = obj;
-
-    for (const prop of properties) {
-      if (current[prop] === undefined) {
-        current[prop] = {};
-      } else if (typeof current[prop] !== 'object') {
-        current[prop] = {};
-      }
-      current = current[prop];
-    }
-
-    current[lastProp] = value;
   }
 }
