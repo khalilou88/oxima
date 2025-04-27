@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  AuthError,
   AuthResponse,
   createClient,
   OAuthResponse,
@@ -82,7 +83,16 @@ export class SupabaseService {
   }
 
   // Reset password
-  async resetPassword(email: string): Promise<AuthResponse> {
+  async resetPassword(email: string): Promise<
+    | {
+        data: {};
+        error: null;
+      }
+    | {
+        data: null;
+        error: AuthError;
+      }
+  > {
     return this.supabase.auth.resetPasswordForEmail(email);
   }
 
