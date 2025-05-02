@@ -85,7 +85,7 @@ export class SupabaseService {
   // Reset password
   async resetPassword(email: string): Promise<
     | {
-        data: {};
+        data: {}; // eslint-disable-line @typescript-eslint/no-empty-object-type
         error: null;
       }
     | {
