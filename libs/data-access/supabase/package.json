@@ -2,8 +2,8 @@
   "name": "@oxima/data-access-supabase",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^19.2.0",
-    "@angular/core": "^19.2.0"
+    "@angular/core": ">=9.2.0",
+    "@supabase/supabase-js": ">=2.49.4"
   },
   "sideEffects": false
 }
