@@ -50,4 +50,5 @@ Thumbs.db
 # DO NOT ignore migrations
 !supabase/migrations
 !supabase/seed
-
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
