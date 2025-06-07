@@ -47,7 +47,7 @@
     "@typescript-eslint/utils": "^8.19.0",
     "angular-eslint": "^19.2.0",
     "autoprefixer": "^10.4.0",
-    "eslint": "^9.8.0",
+    "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.0.0",
     "eslint-plugin-playwright": "^1.6.2",
     "jsonc-eslint-parser": "^2.1.0",
